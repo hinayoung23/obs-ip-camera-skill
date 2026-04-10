@@ -2,7 +2,7 @@
 
 将通用 IP 摄像头的视频流接入 OBS Studio，再通过 OBS Virtual Camera 提供给 QQ、Zoom、Teams、Google Meet、浏览器会议或其他视频通话软件。
 
-仓库里的 Codex skill 位于：
+仓库里的可复用 skill 位于：
 
 ```text
 skills/obs-ip-camera
@@ -22,7 +22,7 @@ skills/obs-ip-camera
 
 - macOS
 - OBS Studio，建议安装到 `/Applications/OBS.app`
-- Codex 或兼容 Codex skill 目录结构的环境
+- 支持读取本地 skill/agent 指令目录的 AI 编程工具，或直接运行仓库中的脚本
 - `ffprobe`，通常随 FFmpeg 安装
 - 可访问摄像头所在局域网
 - 摄像头的流地址，或至少知道 IP、端口、用户名、密码和 RTSP 路径
@@ -38,19 +38,36 @@ brew install --cask blackhole-2ch
 
 不同 macOS 版本、OBS 版本、会议软件版本的权限入口可能略有差异。遇到虚拟摄像头不可见时，优先检查 macOS 的相机扩展和相机权限。
 
-## 安装 Skill
+## 安装或使用 Skill
 
-复制 skill 目录到本机 Codex skills 目录：
+这个仓库不要求必须使用 Codex。核心内容是一个可复制的 skill 目录和一个独立 Python 辅助脚本。
+
+通用安装方式：
+
+```bash
+cp -R skills/obs-ip-camera <your-ai-tool-skills-dir>/obs-ip-camera
+```
+
+其中 `<your-ai-tool-skills-dir>` 是你的 AI 编程工具用于发现 skill、agent、workflow 或本地能力包的目录。不同工具的目录名称和加载机制不同，请按对应工具的文档放置。
+
+也可以不安装 skill，直接在仓库里运行脚本：
+
+```bash
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check --help
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs --help
+```
+
+Codex 示例：
 
 ```bash
 mkdir -p ~/.codex/skills
 cp -R skills/obs-ip-camera ~/.codex/skills/obs-ip-camera
 ```
 
-安装后可以在 Codex 中说：
+如果工具支持按名称显式调用 skill，可以使用类似这样的提示：
 
 ```text
-Use $obs-ip-camera to configure an IP camera stream through OBS Virtual Camera on macOS.
+Use the obs-ip-camera skill to configure an IP camera stream through OBS Virtual Camera on macOS.
 ```
 
 ## 快速使用
@@ -58,10 +75,10 @@ Use $obs-ip-camera to configure an IP camera stream through OBS Virtual Camera o
 如果已知完整 RTSP 地址：
 
 ```bash
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py check \
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check \
   --rtsp-url 'rtsp://<user>:<password>@<camera-ip>:554/<path>'
 
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
   --rtsp-url 'rtsp://<user>:<password>@<camera-ip>:554/<path>' \
   --source-name 'IP Camera'
 ```
@@ -69,12 +86,12 @@ python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
 如果只知道 IP 和账号密码，并且摄像头使用常见 Dahua/Imou/Lecheng 风格 RTSP 路径：
 
 ```bash
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py check \
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check \
   --ip 192.168.1.100 \
   --user admin \
   --password '<device-password>'
 
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
   --ip 192.168.1.100 \
   --user admin \
   --password '<device-password>' \
@@ -84,7 +101,7 @@ python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
 如果你的摄像头 RTSP 路径不同，传入自定义路径：
 
 ```bash
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
   --ip 192.168.1.100 \
   --user admin \
   --password '<device-password>' \
@@ -124,7 +141,7 @@ python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
 打开权限页面：
 
 ```bash
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py open-permissions
+python3 skills/obs-ip-camera/scripts/obs_ip_camera.py open-permissions
 ```
 
 然后检查：
