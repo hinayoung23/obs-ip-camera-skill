@@ -1,0 +1,4 @@
+interface:
+  display_name: "OBS IP Camera"
+  short_description: "把任意 IP 摄像头接入 OBS 虚拟摄像头"
+  default_prompt: "Use $obs-ip-camera to configure an IP camera stream through OBS Virtual Camera on macOS."
