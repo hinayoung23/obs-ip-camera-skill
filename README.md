@@ -38,23 +38,41 @@ brew install --cask blackhole-2ch
 
 不同 macOS 版本、OBS 版本、会议软件版本的权限入口可能略有差异。遇到虚拟摄像头不可见时，优先检查 macOS 的相机扩展和相机权限。
 
-## 安装或使用 Skill
+## 安装
 
-这个仓库不要求必须使用 Codex。核心内容是一个可复制的 skill 目录和一个独立 Python 辅助脚本。
+### pip 安装（推荐）
 
-通用安装方式：
+```bash
+# 从 GitHub Releases 安装
+pip install https://github.com/hinayoung23/obs-ip-camera-skill/releases/download/v1.0.0/obs_ip_camera_skill-1.0.0-py3-none-any.whl
+
+# 或从源码安装
+git clone https://github.com/hinayoung23/obs-ip-camera-skill.git
+cd obs-ip-camera-skill
+pip install -e .
+```
+
+安装后可直接使用 `obs-ip-camera` 命令：
+
+```bash
+obs-ip-camera check --ip 192.168.1.100 --user admin --password '<password>'
+obs-ip-camera configure-obs --ip 192.168.1.100 --user admin --password '<password>'
+obs-ip-camera open-permissions
+obs-ip-camera start-virtualcam
+```
+
+### 安装为 AI Skill
+
+这个仓库也是一个可复制的 skill 目录。将 `skills/obs-ip-camera` 复制到你的 AI 工具技能目录即可：
 
 ```bash
 cp -R skills/obs-ip-camera <your-ai-tool-skills-dir>/obs-ip-camera
 ```
 
-其中 `<your-ai-tool-skills-dir>` 是你的 AI 编程工具用于发现 skill、agent、workflow 或本地能力包的目录。不同工具的目录名称和加载机制不同，请按对应工具的文档放置。
-
-也可以不安装 skill，直接在仓库里运行脚本：
+也可以不安装，直接运行脚本：
 
 ```bash
 python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check --help
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs --help
 ```
 
 Codex 示例：
@@ -75,23 +93,23 @@ Use the obs-ip-camera skill to configure an IP camera stream through OBS Virtual
 如果已知完整 RTSP 地址：
 
 ```bash
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check \
+obs-ip-camera check \
   --rtsp-url 'rtsp://<user>:<password>@<camera-ip>:554/<path>'
 
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
+obs-ip-camera configure-obs \
   --rtsp-url 'rtsp://<user>:<password>@<camera-ip>:554/<path>' \
   --source-name 'IP Camera'
 ```
 
-如果只知道 IP 和账号密码，并且摄像头使用常见 Dahua/Imou/Lecheng 风格 RTSP 路径：
+如果只知道 IP 和账号密码：
 
 ```bash
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check \
+obs-ip-camera check \
   --ip 192.168.1.100 \
   --user admin \
   --password '<device-password>'
 
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
+obs-ip-camera configure-obs \
   --ip 192.168.1.100 \
   --user admin \
   --password '<device-password>' \
@@ -101,7 +119,7 @@ python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
 如果你的摄像头 RTSP 路径不同，传入自定义路径：
 
 ```bash
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
+obs-ip-camera configure-obs \
   --ip 192.168.1.100 \
   --user admin \
   --password '<device-password>' \
@@ -141,7 +159,7 @@ python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs \
 打开权限页面：
 
 ```bash
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py open-permissions
+obs-ip-camera open-permissions
 ```
 
 然后检查：
@@ -200,12 +218,14 @@ OBS Virtual Camera 只提供视频，不提供麦克风音频。
 ## 脚本命令
 
 ```bash
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check --help
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs --help
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py open-permissions
-python3 skills/obs-ip-camera/scripts/obs_ip_camera.py start-virtualcam
+obs-ip-camera check --help
+obs-ip-camera configure-obs --help
+obs-ip-camera open-permissions
+obs-ip-camera start-virtualcam
 ```
 
 `check` 会检查端口、流信息、OBS 安装状态、BlackHole 是否存在、OBS Virtual Camera 扩展状态以及最近 OBS 日志中的关键行。
 
 `configure-obs` 会向 OBS 场景中写入一个 `ffmpeg_source`，并设置常见会议软件适用的 `1920x1080 / 30fps` 输出。可以通过参数调整源名称、画布尺寸、FPS、RTSP 路径或完整 URL。
+
+> 如果未通过 pip 安装，也可以直接运行脚本：`python3 skills/obs-ip-camera/scripts/obs_ip_camera.py check --help`

@@ -10,10 +10,15 @@ description: Configure and troubleshoot generic IP cameras on macOS through RTSP
 Use the bundled helper first for repeatable checks and OBS scene edits:
 
 ```bash
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py check --ip '<camera-ip>' --user '<user>' --password '<password>'
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs --ip '<camera-ip>' --user '<user>' --password '<password>' --source-name 'IP Camera'
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py configure-obs --rtsp-url 'rtsp://user:pass@host:554/path' --source-name 'IP Camera'
-python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py open-permissions
+obs-ip-camera check --ip '<camera-ip>' --user '<user>' --password '<password>'
+obs-ip-camera configure-obs --ip '<camera-ip>' --user '<user>' --password '<password>' --source-name 'IP Camera'
+obs-ip-camera configure-obs --rtsp-url 'rtsp://user:pass@host:554/path' --source-name 'IP Camera'
+obs-ip-camera open-permissions
+```
+
+If `obs-ip-camera` is not on PATH, use the script directly:
+```bash
+python3 ~/.codex/skills/obs-ip-camera/scripts/obs_ip_camera.py check --ip '<camera-ip>' ...
 ```
 
 Do not assume a fixed vendor, IP, username, password, port, path, or target app. Ask the user for any missing camera details. If the exact stream URL is known, prefer `--rtsp-url`; otherwise use `--ip`, `--user`, `--password`, `--port`, and `--rtsp-path`.
