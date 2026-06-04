@@ -6,3 +6,6 @@
 .env
 *.local
 obs-studio/
+dist/
+build/
+*.egg-info/
